@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "moduleResolution": "Bundler",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "esModuleInterop": false
+    },
+    "ts-node": {
+        "swc": true
+    }
+}

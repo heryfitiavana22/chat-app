@@ -1,0 +1,15 @@
+{
+  "name": "repository",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "api-config": "workspace:*",
+    "axios": "^1.3.5",
+    "query-string": "^8.1.0",
+    "types": "workspace:*"
+  }
+}
