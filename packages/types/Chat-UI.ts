@@ -4,7 +4,7 @@ export interface ChatUI {
     id: number
     fromUser: UserUI
     toUser: UserUI
-    isSeen: boolean
+    isSeenByReceiver: boolean
     content: string
     createdAt: Date
 }
@@ -16,6 +16,6 @@ export type ChatListUI = {
         idUser: number
         content: string
         createdAt: Date
-        isSeen: boolean
+        isSeenByReceiver: boolean
     }
 }

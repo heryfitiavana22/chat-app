@@ -23,7 +23,7 @@ export class Chat {
     content: string
 
     @Column({ default: false })
-    isSeen: boolean
+    isSeenByReceiver: boolean
 
     @Column()
     createdAt: Date
@@ -37,7 +37,7 @@ export const ChatFlatSchema = Type.Object({
     fromUserId: Type.Number(),
     toUserId: Type.Number(),
     content: Type.String(),
-    isSeen: Type.Optional(Type.Boolean({ default: false })),
+    isSeenByReceiver: Type.Optional(Type.Boolean({ default: false })),
 })
 
 export const ChatAddSchema = Type.Object({
@@ -51,7 +51,7 @@ export const ChatUpdateSchema = Type.Object({
     fromUserId: Type.Optional(Type.Number()),
     toUserId: Type.Optional(Type.Number()),
     content: Type.Optional(Type.String()),
-    isSeen: Type.Optional(Type.Boolean({ default: false })),
+    isSeenByReceiver: Type.Optional(Type.Boolean({ default: false })),
 })
 
 export const GetChatsSchema = Type.Object({
