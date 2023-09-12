@@ -6,7 +6,7 @@ export const axiosInstance = axios.create({
 })
 
 function apiPath(path: string) {
-    return `/api${API_VERSION}/${path}`
+    return `/api${API_VERSION}${path}`
 }
 
 export const apiURL = {

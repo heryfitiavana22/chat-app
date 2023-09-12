@@ -1,6 +1,6 @@
-import { FastifyInstance } from "fastify"
-import { ChatService } from "../services"
-import { AppDataSource } from "../database"
+import { FastifyInstance } from "fastify";
+import { ChatService } from "../services";
+import { AppDataSource } from "../database";
 import {
     Chat,
     ChatAddSchema,
@@ -9,60 +9,69 @@ import {
     ChatUpdateSchema,
     ChatWhere,
     GetChatsSchema,
-} from "../entities"
-import { Value } from "@sinclair/typebox/value"
-import { apiURL } from "api-config"
-import { responseApi } from "functions"
-import { ParamsId } from "types"
+} from "../entities";
+import { Value } from "@sinclair/typebox/value";
+import { apiURL } from "api-config";
+import { responseApi } from "functions";
+import { ParamsId } from "types";
+import { ChatDTO } from "../DTO";
 
 export async function chatController(fastify: FastifyInstance) {
-    const repo = AppDataSource.getRepository(Chat)
-    const service = new ChatService(repo)
+    const repo = AppDataSource.getRepository(Chat);
+    const service = new ChatService(repo);
 
     fastify.get<{ Querystring: ChatQuery }>(apiURL.chats, async (request) => {
-        const where = queryToWhere(request.query)
+        const where = queryToWhere(request.query);
         if (Value.Check(GetChatsSchema, where)) {
-            const data = await service.getChats(request.query)
-            return responseApi({ data })
+            const chats = await service.getChats(request.query);
+            return responseApi({ data: ChatDTO.toChatsUI(chats) });
         }
-        return responseApi({ status: "error", message: "Query error" })
-    })
+        return responseApi({ status: "error", message: "Query error" });
+    });
 
     fastify.get<{ Querystring: { userId: string } }>(
         apiURL.chatList,
         async (request) => {
-            const id = Number(request.query.userId)
+            const id = Number(request.query.userId);
             if (id) {
-                const data = await service.getChatList(id)
-                return responseApi({ data })
+                const chatlist = await service.getChatList(id);
+                return responseApi({
+                    data: ChatDTO.toChatListUI({
+                        chats: chatlist,
+                        currentUserId: id,
+                    }),
+                });
             }
-            return responseApi({ status: "error", message: "user id error" })
-        },
-    )
+            return responseApi({ status: "error", message: "user id error" });
+        }
+    );
 
     fastify.post<{ Body: ChatFlat }>(apiURL.chat, async (request) => {
-        const chat = request.body
+        const chat = request.body;
         if (Value.Check(ChatAddSchema, chat)) {
-            const data = await service.add(chat)
-            return responseApi({ data })
+            const data = await service.add(chat);
+            return responseApi({ data });
         }
-        return responseApi({ status: "error", message: "Data error" })
-    })
+        return responseApi({ status: "error", message: "Data error" });
+    });
 
     fastify.put<{ Params: ParamsId; Body: ChatFlat }>(
         apiURL.chat + "/:id",
         async (request) => {
-            const id = Number(request.params.id)
-            const chat = request.body
+            const id = Number(request.params.id);
+            const chat = request.body;
 
             if (id && Value.Check(ChatUpdateSchema, chat)) {
-                const data = await service.updateWhere({ id }, chat)
-                return responseApi({ data })
+                const data = await service.updateWhere({ id }, chat);
+                return responseApi({ data });
             }
 
-            return responseApi({ status: "error", message: "Data or id error" })
-        },
-    )
+            return responseApi({
+                status: "error",
+                message: "Data or id error",
+            });
+        }
+    );
 }
 
 function queryToWhere(query: ChatQuery): ChatWhere {
@@ -70,5 +79,5 @@ function queryToWhere(query: ChatQuery): ChatWhere {
         ...query,
         fromUserId: Number(query.fromUserId),
         toUserId: Number(query.toUserId),
-    }
+    };
 }

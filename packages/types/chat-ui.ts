@@ -1,4 +1,4 @@
-import { UserUI } from "./User-UI"
+import { UserUI } from "./user-ui"
 
 export interface ChatUI {
     id: number

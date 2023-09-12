@@ -1,17 +1,12 @@
 import { PropsWithChildren, useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { clearUserInStorage, useUserConnected } from "../../../user-connected";
-import {
-    EditIcon,
-    HeaderWithUserIcon,
-    Loading,
-    P,
-    spaces,
-} from "../../../components";
+import { EditIcon, HeaderWithUserIcon, Loading } from "../../../components";
 import { useNavigation } from "@react-navigation/native";
 import { Routes } from "../../../navigation";
 import { getData } from "repository";
 import { ChatListUI } from "types";
+import { ChatListItem } from "./components";
 
 export function ChatList({}: ChatListProps) {
     const navigation = useNavigation();
@@ -46,7 +41,16 @@ export function ChatList({}: ChatListProps) {
                     <EditIcon size={30} />
                 </TouchableOpacity>
             </View>
-            <P>ok</P>
+            <FlatList
+                data={chatList}
+                renderItem={({ item }) => (
+                    <ChatListItem
+                        chatItem={item}
+                        userConnected={userConnected}
+                    />
+                )}
+                showsVerticalScrollIndicator={false}
+            />
         </HeaderWithUserIcon>
     );
 }

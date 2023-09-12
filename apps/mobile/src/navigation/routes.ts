@@ -3,7 +3,9 @@ import {} from "@react-navigation/native-stack";
 export type RootStackParamList = {
     Login: undefined;
     SignUp: undefined;
-    Chatbox: {};
+    Chatbox: {
+        userIdToChat: number;
+    };
     ChatList: undefined;
 };
 

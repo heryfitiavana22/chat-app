@@ -22,6 +22,9 @@ export class User {
     @Column({ default: false })
     isConnected: boolean
 
+    @Column({default: "2023-09-09 10:28:36"})
+    lastConnection: Date
+
     @Column()
     createdAt: Date
 

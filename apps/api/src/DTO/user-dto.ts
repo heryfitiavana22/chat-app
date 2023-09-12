@@ -1,4 +1,4 @@
-import { UserUI } from "types/User-UI"
+import { UserUI } from "types/"
 import { User } from "../entities"
 import { guardUserInfo } from "../helpers"
 

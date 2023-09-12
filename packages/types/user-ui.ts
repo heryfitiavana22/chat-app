@@ -5,4 +5,5 @@ export interface UserUI {
     pseudo: string
     isConnected: boolean
     createdAt: Date
+    lastConnection: Date
 }

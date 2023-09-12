@@ -1,7 +1,8 @@
-import { User } from "../entities"
+import { ServerFormater } from "functions";
+import { User } from "../entities";
 
 export function guardUserInfo(user: User) {
-    const { password, updatedAt, ...rest } = user
+    const { password, updatedAt, imageURL, ...rest } = user;
 
-    return rest
+    return { ...rest, imageURL: ServerFormater.defaultImagePath(imageURL) };
 }

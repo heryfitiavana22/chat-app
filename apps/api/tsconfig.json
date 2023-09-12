@@ -3,10 +3,10 @@
         "target": "ES6",
         "resolveJsonModule": true,
         "allowJs": true,
-        "moduleResolution": "Bundler",
+        "moduleResolution": "Node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "esModuleInterop": false
+        // "esModuleInterop": false
     },
     "ts-node": {
         "swc": true

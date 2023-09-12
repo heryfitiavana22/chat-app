@@ -1,4 +1,5 @@
 export * from "./ui-utils"
+export * from "./connected-mark"
 export * from "./colors"
 export * from "./typography"
 export * from "./icons"
