@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { Routes } from "../../../../navigation";
 import { createData } from "repository";
-import { saveUserInStorage } from "../../../../user-connected";
+import { saveUserInStorage, setUserToConnected } from "../../../../user-connected";
 import { LoginValue } from "../login.type";
 import { UserUI } from "types";
 
@@ -25,6 +25,7 @@ export function useSubmit() {
             if (response.status == "error")
                 return setMessage("Pseudo ou mot de passe incorrect !");
             await saveUserInStorage(response.data);
+            setUserToConnected()
             navigation.navigate(Routes.ChatList);
         };
 

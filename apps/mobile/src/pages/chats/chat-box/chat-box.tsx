@@ -12,17 +12,22 @@ import {
 import { RootStackParamList } from "../../../navigation";
 import { useUserConnected } from "../../../user-connected";
 import { ChatUI, UserUI } from "types";
-import { getData, getDataById } from "repository";
+import { getData, getDataById, updateOneDataById } from "repository";
 import { COLORS, Loading, P, borderRadius, spaces } from "../../../components";
 import { Header, InputMessage, Message } from "./components";
 import { useQuery } from "@tanstack/react-query";
 import { ServerFormater } from "functions";
+import { chatListSocket, chatSocket } from "../../../socket.io";
+
+let isListening = false;
 
 export function ChatBox({ route }: ChatBoxProps) {
     const { userIdToChat } = route.params;
     const { userConnected } = useUserConnected();
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(true);
+    const [seeMore, setSeeMore] = useState(false);
+    const [page, setPage] = useState(0);
     const [chats, setChats] = useState<ChatUI[]>([]);
     const { data: userToChat } = useQuery({
         queryKey: ["userToChat"],
@@ -38,15 +43,99 @@ export function ChatBox({ route }: ChatBoxProps) {
                 toUserId: userConnected.id,
             });
             setLoading(false);
+
             if (response.status == "success") {
                 if (response.data.length === 0) setHasMore(false);
-                setChats(chats);
+                if (seeMore)
+                    setChats((last) => [
+                        ...new Set([...last, ...response.data]),
+                    ]);
+                else setChats(response.data);
             }
             resolve("");
         });
-    }, [userConnected]);
+    }, [userConnected, seeMore, page]);
+
+    useEffect(() => {
+        if (!userConnected || !userToChat) return;
+        if (isListening) return;
+
+        console.log("listening chat");
+        chatSocket.join({
+            sender: userConnected,
+            receiver: userToChat.data,
+        });
+        chatSocket.listener({
+            sender: userConnected,
+            receiver: userToChat.data,
+            onReceived(newChat) {
+                newChat && setChats((last) => [...new Set([newChat, ...last])]);
+                chatListSocket.emitRefetchReceiver(userToChat.data);
+            },
+        });
+        chatSocket.listenerSeenAllMessage({
+            sender: userConnected,
+            receiver: userToChat.data,
+            onReceived() {
+                setChats((lastChats) => {
+                    return lastChats.map((curr) => ({
+                        ...curr,
+                        isSeenByReceiver: true,
+                    }));
+                });
+                chatListSocket.emitRefetchReceiver(userToChat.data);
+            },
+        });
+        isListening = true;
+    }, [userConnected, userToChat]);
+
+    useEffect(() => {
+        return () => {
+            if (userConnected && userToChat) {
+                console.log("leaving chat");
+                chatSocket.leave({
+                    sender: userConnected,
+                    receiver: userToChat.data,
+                });
+                isListening = false;
+            }
+        };
+    }, [userConnected, userToChat]);
+
+    useEffect(() => {
+        if (!userConnected || !userToChat) return;
+        // message non lu par l'utilisateur connecté
+        new Promise(async (resolve) => {
+            const chatUpdated: ChatUI[] = [];
+            let isChanged = false;
+            for (const chat of chats) {
+                if (
+                    userConnected.id == chat.toUser.id &&
+                    !chat.isSeenByReceiver
+                ) {
+                    await updateOneDataById("chat", chat.id.toString(), {
+                        isSeenByReceiver: true,
+                    });
+                    chatUpdated.push({ ...chat, isSeenByReceiver: true });
+                    isChanged = true;
+                } else {
+                    chatUpdated.push(chat);
+                }
+            }
+            if (isChanged) {
+                setChats(chatUpdated);
+                chatListSocket.emitRefetchReceiver(userToChat.data);
+                chatSocket.emitSeenAllMessage({
+                    sender: userConnected,
+                    receiver: userToChat.data,
+                });
+            }
+            resolve("");
+        });
+    }, [userConnected, userToChat, chats]);
 
     if (!userToChat || !userConnected) return <Loading />;
+
     const lastMessage = chats.at(0);
     const isLastMessageMine =
         lastMessage && userConnected.id == lastMessage.fromUser.id;
@@ -65,7 +154,10 @@ export function ChatBox({ route }: ChatBoxProps) {
                         {hasMore && chats.length > 9 && (
                             <TouchableOpacity
                                 style={styles.seeMore}
-                                // onPress={onSeeMore}
+                                onPress={() => {
+                                    setSeeMore(true);
+                                    setPage((p) => p + 1);
+                                }}
                             >
                                 <P>voir plus...</P>
                             </TouchableOpacity>
@@ -102,7 +194,15 @@ export function ChatBox({ route }: ChatBoxProps) {
                     console.log("end reached");
                 }}
             />
-            <InputMessage onSent={() => {}} />
+            <InputMessage
+                onSent={(content) => {
+                    chatSocket.emit({
+                        sender: userConnected,
+                        receiver: userToChat.data,
+                        content,
+                    });
+                }}
+            />
         </View>
     );
 }

@@ -33,7 +33,9 @@
     "react-native-vector-icons": "^10.0.0",
     "repository": "workspace:*",
     "socket.io-client": "^4.7.2",
-    "types": "workspace:*"
+    "types": "workspace:*",
+    "env": "workspace:*",
+    "socket.io-name": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

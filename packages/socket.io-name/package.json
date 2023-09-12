@@ -1,0 +1,12 @@
+{
+  "name": "socket.io-name",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "types": "workspace:*"
+  }
+}

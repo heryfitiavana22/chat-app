@@ -1,22 +1,24 @@
-import { apiURL, axiosInstance, KeyURL } from "api-config"
-import { concatURL, getContentType } from "./utils"
-import { ResponseAPI } from "types"
+import { apiURL, axiosInstance, KeyURL } from "api-config";
+import { concatURL, getContentType } from "./utils";
+import { ResponseAPI } from "types";
 
 export async function updateOneDataById<T>(
     uri: KeyURL,
-    data: T,
+    id: string,
+    data: Partial<T>
 ): Promise<ResponseAPI<T>> {
+    const url = concatURL(apiURL[uri], "/", id);
     return axiosInstance
-        .put(apiURL[uri], data, {
+        .put(url, data, {
             headers: { "Content-Type": getContentType(data) },
         })
-        .then((v) => v.data)
+        .then((v) => v.data);
 }
 
 export async function updateMoreData<T>(
     uri: KeyURL,
-    data: T[],
+    data: T[]
 ): Promise<ResponseAPI<T>> {
-    const url = concatURL(apiURL[uri])
-    return axiosInstance.put(url, data).then((v) => v.data)
+    const url = concatURL(apiURL[uri]);
+    return axiosInstance.put(url, data).then((v) => v.data);
 }

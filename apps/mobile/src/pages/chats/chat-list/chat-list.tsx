@@ -1,18 +1,27 @@
-import { PropsWithChildren, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
-import { clearUserInStorage, useUserConnected } from "../../../user-connected";
+import { clearUserInStorage, setUserToDisconnected, useUserConnected } from "../../../user-connected";
 import { EditIcon, HeaderWithUserIcon, Loading } from "../../../components";
 import { useNavigation } from "@react-navigation/native";
 import { Routes } from "../../../navigation";
 import { getData } from "repository";
 import { ChatListUI } from "types";
 import { ChatListItem } from "./components";
+import { chatListSocket } from "../../../socket.io";
 
 export function ChatList({}: ChatListProps) {
     const navigation = useNavigation();
     const { userConnected } = useUserConnected();
     const [chatList, setChatList] = useState<ChatListUI[]>([]);
     const [openList, setOpenList] = useState(false);
+    const [refetch, setRefecth] = useState(false)
+    const idListener = useMemo(() => Math.random(), [])
+
+    useEffect(() => {
+        navigation.addListener("focus", () => {
+            setRefecth((last) => !last)
+        })
+    }, [])
 
     useEffect(() => {
         if (!userConnected) return;
@@ -24,7 +33,9 @@ export function ChatList({}: ChatListProps) {
             if (response.status == "success") setChatList(response.data);
             resolve("");
         });
-    }, [userConnected]);
+
+        chatListSocket.listener(() => setRefecth((last) => !last), idListener)
+    }, [userConnected, refetch]);
 
     if (!userConnected) return <Loading />;
 
@@ -32,6 +43,7 @@ export function ChatList({}: ChatListProps) {
         <HeaderWithUserIcon
             user={userConnected}
             onSignOut={() => {
+                setUserToDisconnected()
                 clearUserInStorage();
                 navigation.navigate(Routes.Login);
             }}

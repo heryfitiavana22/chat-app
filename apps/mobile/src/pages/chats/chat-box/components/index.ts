@@ -1,3 +1,3 @@
-export * from "./Header"
-export * from "./InputMessage"
-export * from "./Message"
+export * from "./header"
+export * from "./input-message"
+export * from "./message"
