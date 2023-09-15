@@ -45,7 +45,7 @@ export class ChatDTO {
             ) {
                 chatListUI.push({
                     id,
-                    lastChat: { ...rest, idUser: toUser.id },
+                    lastChat: { ...rest, idUser: fromUser.id },
                     user: guardUserInfo(toUser),
                 });
                 return usersIdPicked.push(toUser.id);

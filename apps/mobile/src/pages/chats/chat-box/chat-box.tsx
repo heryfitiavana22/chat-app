@@ -18,6 +18,7 @@ import { Header, InputMessage, Message } from "./components";
 import { useQuery } from "@tanstack/react-query";
 import { ServerFormater } from "functions";
 import { chatListSocket, chatSocket } from "../../../socket.io";
+import { ChatBoxHelper } from "./chat-box.helper";
 
 let isListening = false;
 
@@ -41,15 +42,19 @@ export function ChatBox({ route }: ChatBoxProps) {
             const response = await getData<ChatUI>("chats", {
                 fromUserId: userIdToChat,
                 toUserId: userConnected.id,
+                page,
             });
             setLoading(false);
 
             if (response.status == "success") {
                 if (response.data.length === 0) setHasMore(false);
                 if (seeMore)
-                    setChats((last) => [
-                        ...new Set([...last, ...response.data]),
-                    ]);
+                    setChats((last) => {
+                        return ChatBoxHelper.removeDuplicatedID([
+                            ...last,
+                            ...response.data,
+                        ]);
+                    });
                 else setChats(response.data);
             }
             resolve("");
@@ -191,7 +196,8 @@ export function ChatBox({ route }: ChatBoxProps) {
                 showsVerticalScrollIndicator={false}
                 inverted
                 onEndReached={() => {
-                    console.log("end reached");
+                    setSeeMore(true);
+                    setPage((p) => p + 1);
                 }}
             />
             <InputMessage

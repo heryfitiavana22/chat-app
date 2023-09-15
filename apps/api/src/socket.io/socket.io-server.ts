@@ -24,7 +24,7 @@ export class SocketIoServer {
                 console.log("from client received");
             });
             this.chatSocket(socket);
-            this.userSocket(socket)
+            this.userSocket(socket);
         });
     }
 

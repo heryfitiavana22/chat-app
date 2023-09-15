@@ -22,8 +22,9 @@ export async function chatController(fastify: FastifyInstance) {
 
     fastify.get<{ Querystring: ChatQuery }>(apiURL.chats, async (request) => {
         const where = queryToWhere(request.query);
+        const page = Number(request.query.page || 0);
         if (Value.Check(GetChatsSchema, where)) {
-            const chats = await service.getChats(request.query);
+            const chats = await service.getChats(request.query, page);
             return ApiResponse.success({ data: ChatDTO.toChatsUI(chats) });
         }
         return ApiResponse.error({ message: "Query error" });

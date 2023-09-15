@@ -35,7 +35,7 @@ export function Header({ userToChat }: HeaderProps) {
                 <View style={styles.imageContainer}>
                     <Image
                         source={{
-                            uri: ServerFormater.defaultImagePath(
+                            uri: ServerFormater.staticPath(
                                 userToChat.imageURL
                             ),
                         }}
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     userImg: {
         width: "100%",
         height: "100%",
-        borderRadius: borderRadius.extraLarge,
+        borderRadius: borderRadius.rounded,
     },
     username: {
         fontSize: fontSizes.large,

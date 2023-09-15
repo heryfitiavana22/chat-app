@@ -19,7 +19,7 @@ export class ApiResponse {
         return {
             data,
             message,
-            status: "success",
+            status: "error",
         };
     }
 }

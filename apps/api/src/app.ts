@@ -7,9 +7,10 @@ import fastifyIO from "fastify-socket.io";
 import fastifyStatic from "@fastify/static";
 import { SocketIoServer } from "./socket.io";
 import * as path from "node:path";
+import { hash } from "./helpers";
 
 const fastify = Fastify({
-    logger: true,
+    // logger: true,
 });
 
 fastify.register(fastifyStatic, {

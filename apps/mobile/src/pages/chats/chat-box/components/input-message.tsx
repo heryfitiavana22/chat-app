@@ -13,13 +13,10 @@ export function InputMessage({ onSent }: InputMessageProps) {
     return (
         <View style={styles.container}>
             <View style={styles.inputContainer}>
-                {/* <View style={[styles.customCenter, styles.plus]}>
-                    <PlusIcon isActive />
-                </View> */}
                 <TextInput
                     style={styles.input}
-                    placeholder="entrer votre message"
-                    placeholderTextColor={"#808080"}
+                    placeholder="Entrez un message"
+                    placeholderTextColor={COLORS.neutral[500]}
                     value={message}
                     onChangeText={(e) => setMessage(e)}
                     onSubmitEditing={onSubmit}
@@ -28,7 +25,7 @@ export function InputMessage({ onSent }: InputMessageProps) {
                     style={[styles.customCenter, styles.send]}
                     onPress={onSubmit}
                 >
-                    <ShareIcon />
+                    <ShareIcon isActive />
                 </TouchableOpacity>
             </View>
         </View>
@@ -43,14 +40,14 @@ const styles = StyleSheet.create({
     container: {
         padding: spaces.m2,
         position: "absolute",
-        bottom: 12,
+        bottom: 0,
         width: "100%",
-        // flex: 1
     },
     inputContainer: {
         flexDirection: "row",
         alignItems: "center",
         paddingVertical: spaces.m2,
+        paddingHorizontal: spaces.m3,
         backgroundColor: COLORS.neutral[200],
         borderRadius: borderRadius.fourXL,
         gap: spaces.m2,
@@ -62,21 +59,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flexDirection: "row",
     },
-    plus: {
-        marginRight: spaces.m2,
-        paddingLeft: spaces.m2,
-    },
     input: {
         flex: 1,
-        padding: 0,
         borderRadius: 50,
-        fontSize: 15,
         paddingHorizontal: spaces.m1,
         color: COLORS.neutral[800],
         height: 38,
     },
-    send: {
-        position: "relative",
-        right: 10,
-    },
+    send: {},
 });

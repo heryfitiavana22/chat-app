@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { borderRadius, spaces } from "../../../../components";
+import { COLORS, borderRadius, spaces } from "../../../../components";
 import { DateHumanizer } from "../../../../utils";
 import { ChatUI, UserUI } from "types";
 
@@ -10,26 +10,36 @@ export function Message({ chat, userConnected }: MessageProps) {
     return (
         <View
             style={[
-                styles.View,
+                styles.view,
                 {
-                    backgroundColor: isMyMessage ? "#f2994a" : "#d9d9d9",
+                    backgroundColor: isMyMessage
+                        ? COLORS.brandColor
+                        : COLORS.neutral[200],
                     alignSelf: isMyMessage ? "flex-end" : "flex-start",
                 },
             ]}
         >
             <Text
                 style={[
+                    styles.time,
+                    {
+                        color: isMyMessage
+                            ? COLORS.neutral[300]
+                            : COLORS.neutral[500],
+                    },
+                ]}
+            >
+                {DateHumanizer.fromNow(chat.createdAt)}{" "}
+            </Text>
+            <Text
+                style={[
                     styles.text,
                     {
-                        color: isMyMessage ? "white" : "#404040",
+                        color: isMyMessage ? "white" : COLORS.neutral[700],
                     },
                 ]}
             >
                 {chat.content}
-            </Text>
-            <Text style={styles.time}>
-                {" "}
-                {DateHumanizer.fromNow(chat.createdAt)}{" "}
             </Text>
         </View>
     );
@@ -41,16 +51,14 @@ type MessageProps = PropsWithChildren<{
 }>;
 
 const styles = StyleSheet.create({
-    View: {
-        flexDirection: "column-reverse",
-        margin: 10,
+    view: {
+        margin: spaces.m2,
         padding: spaces.m4,
-        borderRadius: borderRadius.fourXL,
+        borderRadius: borderRadius.twoXL,
         maxWidth: "80%",
     },
     text: {},
     time: {
-        color: "#737373",
         alignSelf: "flex-end",
         fontSize: 13,
     },

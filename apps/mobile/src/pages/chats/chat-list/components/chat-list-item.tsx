@@ -35,7 +35,7 @@ export function ChatListItem({ chatItem, userConnected }: ChatListItemProps) {
                     source={{
                         uri: ServerFormater.staticPath(chatItem.user.imageURL),
                     }}
-                    style={styles.Image}
+                    style={styles.image}
                 />
                 {chatItem.user.isConnected ? (
                     <ConnectedMark />
@@ -53,7 +53,7 @@ export function ChatListItem({ chatItem, userConnected }: ChatListItemProps) {
                         {chatItem.user.name}
                     </P>
                     <P style={styles.subTitle}>
-                        {DateHumanizer.fromNow(chatItem.lastChat.createdAt)}
+                        {DateHumanizer.messageDate(chatItem.lastChat.createdAt)}
                     </P>
                 </View>
                 <View style={styles.rowMessage}>
@@ -95,21 +95,18 @@ type ChatListItemProps = PropsWithChildren<{
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
-        height: 65,
-        marginTop: 15,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: "#a6a6a6",
-        gap: 10,
+        gap: spaces.m3,
+        marginBottom: spaces.m4,
     },
     imageContainer: {
         width: 55,
         height: 55,
         position: "relative",
     },
-    Image: {
+    image: {
         width: "100%",
         height: "100%",
-        borderRadius: borderRadius.twoXL,
+        borderRadius: borderRadius.rounded,
         objectFit: "contain",
     },
     lastconnection: {
@@ -121,7 +118,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 2,
         borderRadius: borderRadius.medium,
     },
-
     content: {
         flex: 1,
     },
@@ -134,12 +130,11 @@ const styles = StyleSheet.create({
     },
     name: {
         fontWeight: "bold",
-        color: "#404040",
+        color: COLORS.neutral[700],
         fontSize: fontSizes.large,
     },
-
     subTitle: {
-        color: "#a6a6a6",
+        color: COLORS.neutral[400],
     },
     text: {
         color: "#8c8c8c",

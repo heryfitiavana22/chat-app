@@ -36,6 +36,16 @@ export class DateHumanizer {
             return `${years} ans`;
         }
     }
+
+    static messageDate(date: DateInput) {
+        const now = dayjs();
+        const messageMoment = dayjs(date);
+        const diff = now.diff(messageMoment, "days");
+
+        if (diff < 1) return messageMoment.format("HH:mm");
+        if (diff < 7) return messageMoment.format("ddd");
+        return messageMoment.format("YYYY");
+    }
 }
 
 type DateInput = string | Date;

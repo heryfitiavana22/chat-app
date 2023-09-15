@@ -1,7 +1,16 @@
 import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
-import { clearUserInStorage, setUserToDisconnected, useUserConnected } from "../../../user-connected";
-import { EditIcon, HeaderWithUserIcon, Loading } from "../../../components";
+import {
+    clearUserInStorage,
+    setUserToDisconnected,
+    useUserConnected,
+} from "../../../user-connected";
+import {
+    EditIcon,
+    HeaderWithUserIcon,
+    Loading,
+    spaces,
+} from "../../../components";
 import { useNavigation } from "@react-navigation/native";
 import { Routes } from "../../../navigation";
 import { getData } from "repository";
@@ -14,14 +23,17 @@ export function ChatList({}: ChatListProps) {
     const { userConnected } = useUserConnected();
     const [chatList, setChatList] = useState<ChatListUI[]>([]);
     const [openList, setOpenList] = useState(false);
-    const [refetch, setRefecth] = useState(false)
-    const idListener = useMemo(() => Math.random(), [])
+    const [refetch, setRefecth] = useState(false);
+    const idListener = useMemo(() => Math.random(), []);
 
     useEffect(() => {
         navigation.addListener("focus", () => {
-            setRefecth((last) => !last)
-        })
-    }, [])
+            setRefecth((last) => !last);
+        });
+        navigation.addListener("blur", () => {
+            setRefecth((last) => !last);
+        });
+    }, []);
 
     useEffect(() => {
         if (!userConnected) return;
@@ -34,7 +46,8 @@ export function ChatList({}: ChatListProps) {
             resolve("");
         });
 
-        chatListSocket.listener(() => setRefecth((last) => !last), idListener)
+        chatListSocket.join(userConnected);
+        chatListSocket.listener(() => setRefecth((last) => !last), idListener);
     }, [userConnected, refetch]);
 
     if (!userConnected) return <Loading />;
@@ -43,7 +56,7 @@ export function ChatList({}: ChatListProps) {
         <HeaderWithUserIcon
             user={userConnected}
             onSignOut={() => {
-                setUserToDisconnected()
+                setUserToDisconnected();
                 clearUserInStorage();
                 navigation.navigate(Routes.Login);
             }}
@@ -73,5 +86,6 @@ const styles = StyleSheet.create({
     messageToUser: {
         flexDirection: "row",
         justifyContent: "flex-end",
+        marginBottom: spaces.m2,
     },
 });
