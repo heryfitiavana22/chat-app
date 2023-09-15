@@ -1,2 +1,2 @@
-export * from "./response-api"
+export * from "./api-response"
 export * from "./server-formater"

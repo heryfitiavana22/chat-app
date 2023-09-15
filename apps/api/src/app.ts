@@ -13,21 +13,20 @@ const fastify = Fastify({
 });
 
 fastify.register(fastifyStatic, {
-    root: path.join(__dirname, "public"),
-    prefix: "/public/",
+    root: path.join(__dirname, "../public"),
+    prefix: "/static/",
 });
 
 AppDataSource.initialize()
     .then(async () => {
         console.log("Data Source has been initialized!");
-        
+
         fastify.get("/", (request, reply) => {
             return {
                 ok: true,
             };
         });
 
-    
         fastify.register(chatController);
         fastify.register(userController);
         fastify.register(fastifyIO);

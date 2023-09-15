@@ -12,7 +12,7 @@ import {
 } from "../entities";
 import { Value } from "@sinclair/typebox/value";
 import { apiURL } from "api-config";
-import { responseApi } from "functions";
+import { ApiResponse } from "functions";
 import { ParamsId } from "types";
 import { ChatDTO } from "../DTO";
 
@@ -24,9 +24,9 @@ export async function chatController(fastify: FastifyInstance) {
         const where = queryToWhere(request.query);
         if (Value.Check(GetChatsSchema, where)) {
             const chats = await service.getChats(request.query);
-            return responseApi({ data: ChatDTO.toChatsUI(chats) });
+            return ApiResponse.success({ data: ChatDTO.toChatsUI(chats) });
         }
-        return responseApi({ status: "error", message: "Query error" });
+        return ApiResponse.error({ message: "Query error" });
     });
 
     fastify.get<{ Querystring: { userId: string } }>(
@@ -35,14 +35,14 @@ export async function chatController(fastify: FastifyInstance) {
             const id = Number(request.query.userId);
             if (id) {
                 const chatlist = await service.getChatList(id);
-                return responseApi({
+                return ApiResponse.success({
                     data: ChatDTO.toChatListUI({
                         chats: chatlist,
                         currentUserId: id,
                     }),
                 });
             }
-            return responseApi({ status: "error", message: "user id error" });
+            return ApiResponse.error({ message: "user id error" });
         }
     );
 
@@ -50,9 +50,9 @@ export async function chatController(fastify: FastifyInstance) {
         const chat = request.body;
         if (Value.Check(ChatAddSchema, chat)) {
             const data = await service.add(chat);
-            return responseApi({ data });
+            return ApiResponse.success({ data });
         }
-        return responseApi({ status: "error", message: "Data error" });
+        return ApiResponse.error({ message: "Data error" });
     });
 
     fastify.put<{ Params: ParamsId; Body: ChatFlat }>(
@@ -63,11 +63,10 @@ export async function chatController(fastify: FastifyInstance) {
 
             if (id && Value.Check(ChatUpdateSchema, chat)) {
                 const data = await service.updateWhere({ id }, chat);
-                return responseApi({ data });
+                return ApiResponse.success({ data });
             }
 
-            return responseApi({
-                status: "error",
+            return ApiResponse.error({
                 message: "Data or id error",
             });
         }
