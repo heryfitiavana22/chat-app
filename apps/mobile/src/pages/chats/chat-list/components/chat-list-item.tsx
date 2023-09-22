@@ -60,7 +60,6 @@ export function ChatListItem({ chatItem, userConnected }: ChatListItemProps) {
                     <P
                         numberOfLines={1}
                         style={[
-                            styles.text,
                             isSeenByConnected
                                 ? {}
                                 : { color: COLORS.neutral[900] },
@@ -135,9 +134,6 @@ const styles = StyleSheet.create({
     },
     subTitle: {
         color: COLORS.neutral[400],
-    },
-    text: {
-        color: "#8c8c8c",
     },
     rowMessage: {
         flexDirection: "row",

@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getUserInStorage } from "./user-storage";
 
 export function useUserConnected() {
-    const userInStorage = getUserInStorage();
-    const [user, setUser] = useState(getUserInStorage());
+    return useCallback(() => {
+        const userInStorage = getUserInStorage();
+        const [user, setUser] = useState(getUserInStorage());
 
-    return {
-        userConnected: user,
-        isConnected: Boolean(userInStorage),
-    };
+        useEffect(() => {
+            setUser(getUserInStorage());
+        }, []);
+
+        return {
+            userConnected: user,
+            isConnected: Boolean(userInStorage),
+            refetch: () => {
+                const userInStorage = getUserInStorage();
+                setUser(userInStorage);
+                return userInStorage;
+            },
+        };
+    }, [])();
 }

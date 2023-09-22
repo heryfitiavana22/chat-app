@@ -183,7 +183,7 @@ export function ChatBox({ route }: ChatBoxProps) {
                                 <View style={styles.miniImageContainer}>
                                     <Image
                                         source={{
-                                            uri: ServerFormater.defaultImagePath(
+                                            uri: ServerFormater.staticPath(
                                                 userToChat.data.imageURL
                                             ),
                                         }}

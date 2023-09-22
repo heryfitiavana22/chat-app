@@ -19,12 +19,14 @@ export function Login({}: LoginProps) {
     const { message, submitting, onSubmit, onSubmitError } = useSubmit();
     const navigation = useNavigation();
     const { control, handleSubmit } = useForm<LoginValue>();
-    const { userConnected } = useUserConnected();
-    const redirect = () => {
-        if (userConnected) navigation.navigate(Routes.ChatList);
-    };
+    const { refetch } = useUserConnected();
 
     useEffect(() => {
+        const redirect = () => {
+            const currentUser = refetch();
+            if (currentUser) navigation.navigate(Routes.ChatList);
+        };
+
         redirect();
         navigation.addListener("blur", redirect);
         navigation.addListener("focus", redirect);

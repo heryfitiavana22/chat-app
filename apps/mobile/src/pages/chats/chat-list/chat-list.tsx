@@ -55,9 +55,9 @@ export function ChatList({}: ChatListProps) {
     return (
         <HeaderWithUserIcon
             user={userConnected}
-            onSignOut={() => {
+            onSignOut={async () => {
                 setUserToDisconnected();
-                clearUserInStorage();
+                await clearUserInStorage();                
                 navigation.navigate(Routes.Login);
             }}
         >

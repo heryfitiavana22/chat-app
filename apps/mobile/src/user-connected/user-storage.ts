@@ -9,6 +9,7 @@ const userKey = "userInStorage";
 
 export function getUserInStorage() {
     const user = getDataInStorage<string>(userKey);
+
     return user ? (JSON.parse(user) as UserUI) : null;
 }
 
