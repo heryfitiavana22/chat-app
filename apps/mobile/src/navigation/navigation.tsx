@@ -15,7 +15,7 @@ const customTheme: Theme = {
     colors: {
         ...DefaultTheme.colors,
         background: "transparent",
-        primary: COLORS.brandColor,
+        primary: COLORS.BRAND_COLOR,
         text: COLORS.neutral[800],
     },
 };

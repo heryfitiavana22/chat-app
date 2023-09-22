@@ -12,8 +12,8 @@ function App() {
     useEffect(() => {
         console.log(JSON.stringify(AppState));
         AppState.addEventListener("change", (e) => {
-            console.log("chage state");
-            console.log(e);
+            // console.log("chage state");
+            // console.log(e);
             if (e == "active") return setUserToConnected();
             if (e == "background" || e == "inactive" || e == "unknown")
                 setUserToDisconnected();

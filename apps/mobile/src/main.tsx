@@ -2,6 +2,7 @@ import { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StyleSheet, View } from "react-native";
 import { Navigation } from "./navigation";
+import { spaces } from "./components";
 
 const queryClient = new QueryClient();
 

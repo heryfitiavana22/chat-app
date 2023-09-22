@@ -17,6 +17,7 @@ import { getData } from "repository";
 import { ChatListUI } from "types";
 import { ChatListItem } from "./components";
 import { chatListSocket } from "../../../socket.io";
+import { ListUsers } from "../list-users";
 
 export function ChatList({}: ChatListProps) {
     const navigation = useNavigation();
@@ -25,14 +26,11 @@ export function ChatList({}: ChatListProps) {
     const [openList, setOpenList] = useState(false);
     const [refetch, setRefecth] = useState(false);
     const idListener = useMemo(() => Math.random(), []);
+    const refetchChatList = () => setRefecth((last) => !last);
 
     useEffect(() => {
-        navigation.addListener("focus", () => {
-            setRefecth((last) => !last);
-        });
-        navigation.addListener("blur", () => {
-            setRefecth((last) => !last);
-        });
+        navigation.addListener("focus", refetchChatList);
+        navigation.addListener("blur", refetchChatList);
     }, []);
 
     useEffect(() => {
@@ -47,36 +45,44 @@ export function ChatList({}: ChatListProps) {
         });
 
         chatListSocket.join(userConnected);
-        chatListSocket.listener(() => setRefecth((last) => !last), idListener);
+        chatListSocket.listener(refetchChatList, idListener);
     }, [userConnected, refetch]);
 
     if (!userConnected) return <Loading />;
 
     return (
-        <HeaderWithUserIcon
-            user={userConnected}
-            onSignOut={async () => {
-                setUserToDisconnected();
-                await clearUserInStorage();                
-                navigation.navigate(Routes.Login);
-            }}
-        >
-            <View style={styles.messageToUser}>
-                <TouchableOpacity onPress={() => setOpenList(true)}>
-                    <EditIcon size={30} />
-                </TouchableOpacity>
-            </View>
-            <FlatList
-                data={chatList}
-                renderItem={({ item }) => (
-                    <ChatListItem
-                        chatItem={item}
-                        userConnected={userConnected}
-                    />
-                )}
-                showsVerticalScrollIndicator={false}
-            />
-        </HeaderWithUserIcon>
+        <>
+            <HeaderWithUserIcon
+                user={userConnected}
+                onSignOut={async () => {
+                    setUserToDisconnected();
+                    await clearUserInStorage();
+                    navigation.navigate(Routes.Login);
+                }}
+            >
+                <View style={styles.messageToUser}>
+                    <TouchableOpacity onPress={() => setOpenList(true)}>
+                        <EditIcon size={30} />
+                    </TouchableOpacity>
+                </View>
+                <FlatList
+                    data={chatList}
+                    renderItem={({ item }) => (
+                        <ChatListItem
+                            chatItem={item}
+                            userConnected={userConnected}
+                        />
+                    )}
+                    showsVerticalScrollIndicator={false}
+                />
+            </HeaderWithUserIcon>
+            {openList && (
+                <ListUsers
+                    userConnected={userConnected}
+                    onClose={() => setOpenList(false)}
+                />
+            )}
+        </>
     );
 }
 

@@ -13,7 +13,7 @@ export function Message({ chat, userConnected }: MessageProps) {
                 styles.view,
                 {
                     backgroundColor: isMyMessage
-                        ? COLORS.brandColor
+                        ? COLORS.BRAND_COLOR
                         : COLORS.neutral[200],
                     alignSelf: isMyMessage ? "flex-end" : "flex-start",
                 },

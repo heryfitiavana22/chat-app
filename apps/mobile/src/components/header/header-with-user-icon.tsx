@@ -50,10 +50,10 @@ export function HeaderWithUserIcon({
 const styles = StyleSheet.create({
     header: {
         paddingVertical: spaces.m4,
-        paddingHorizontal: spaces.m2,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        paddingHorizontal: spaces.m2,
     },
     logo: {
         flexDirection: "row",
@@ -76,15 +76,16 @@ const styles = StyleSheet.create({
     },
     dropdown: {
         position: "absolute",
-        top: 40,
+        top: 60,
         left: 0,
         padding: spaces.m3,
         width: "100%",
+        backgroundColor: COLORS.neutral[100]
     },
     children: {
         marginBottom: 128,
         marginTop: spaces.m3,
-        paddingHorizontal: spaces.m3,
+        paddingHorizontal: spaces.m2,
     },
 });
 

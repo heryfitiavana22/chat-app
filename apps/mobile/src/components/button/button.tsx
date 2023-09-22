@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         padding: spaces.m3,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: COLORS.brandColor,
+        backgroundColor: COLORS.BRAND_COLOR,
     },
     text: {
         color: "#fff",
