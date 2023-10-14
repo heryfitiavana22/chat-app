@@ -1,13 +1,13 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import Fastify from "fastify";
-import { chatController, userController } from "./controllers";
 import { AppDataSource } from "./database";
 import fastifyIO from "fastify-socket.io";
 import fastifyStatic from "@fastify/static";
 import { SocketIoServer } from "./socket.io";
 import * as path from "node:path";
 import { hash } from "./helpers";
+import { chatRoute, userRoute } from "./routes";
 
 const fastify = Fastify({
     // logger: true,
@@ -28,8 +28,8 @@ AppDataSource.initialize()
             };
         });
 
-        fastify.register(chatController);
-        fastify.register(userController);
+        fastify.register(chatRoute);
+        fastify.register(userRoute);
         fastify.register(fastifyIO);
 
         fastify.ready().then(() => {

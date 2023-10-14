@@ -1,6 +1,4 @@
-import { apiURL } from "api-config";
-import { FastifyInstance } from "fastify";
-import { AppDataSource } from "../database";
+import { FastifyRequest } from "fastify";
 import { User, UserSchema } from "../entities";
 import { UserService } from "../services";
 import { ApiResponse } from "functions";
@@ -9,41 +7,40 @@ import { ParamsId } from "types";
 import { compareHash, guardUserInfo, hash } from "../helpers";
 import { Value } from "@sinclair/typebox/value";
 
-export async function userController(fastify: FastifyInstance) {
-    const repo = AppDataSource.getRepository(User);
-    const service = new UserService(repo);
+export class UserController {
+    constructor(private service: UserService) {}
 
-    fastify.get(apiURL.users, async (request) => {
-        const data = await service.getAll();
+    getUsers = async (request: FastifyRequest) => {
+        const data = await this.service.getAll();
         return ApiResponse.success({ data: UserDTO.toUsersUI(data) });
-    });
+    };
 
-    fastify.get<{ Params: ParamsId }>(apiURL.user + "/:id", async (request) => {
+    getUserById = async (request: FastifyRequest<{ Params: ParamsId }>) => {
         const id = Number(request.params.id);
         if (id) {
-            const data = await service.getOneById(id);
+            const data = await this.service.getOneById(id);
             return ApiResponse.success({ data: UserDTO.toUserUI(data) });
         }
         return ApiResponse.error({ message: "Params error" });
-    });
+    };
 
-    fastify.post<{ Body: User }>(apiURL.userIsValid, async (request) => {
+    userIsValid = async (request: FastifyRequest<{ Body: User }>) => {
         const { pseudo, password } = request.body;
         if (pseudo && password) {
-            const userFind = await service.getOneWhere({ pseudo });
+            const userFind = await this.service.getOneWhere({ pseudo });
             if (userFind && compareHash(password, userFind.password)) {
                 return ApiResponse.success({ data: guardUserInfo(userFind) });
             }
         }
         return ApiResponse.error({ message: "Data error" });
-    });
+    };
 
-    fastify.post<{ Body: User }>(apiURL.user, async (request) => {
+    createUser = async (request: FastifyRequest<{ Body: User }>) => {
         const newUser = request.body;
         if (Value.Check(UserSchema, newUser)) {
             try {
                 newUser.password = hash(newUser.password);
-                const userAdded = await service.add(newUser);
+                const userAdded = await this.service.add(newUser);
                 return ApiResponse.success({ data: guardUserInfo(userAdded) });
             } catch (error) {
                 console.log(error);
@@ -53,19 +50,15 @@ export async function userController(fastify: FastifyInstance) {
                 });
             }
         }
-
         return ApiResponse.error({ message: "Data error" });
-    });
+    };
 
-    fastify.delete<{ Params: ParamsId }>(
-        apiURL.user + "/:id",
-        async (request) => {
-            const id = Number(request.params.id);
-            if (id) {
-                const data = await service.deleteById(id);
-                return ApiResponse.success({ data });
-            }
-            return ApiResponse.error({ message: "Params error" });
+    deleteById = async (request: FastifyRequest<{ Params: ParamsId }>) => {
+        const id = Number(request.params.id);
+        if (id) {
+            const data = await this.service.deleteById(id);
+            return ApiResponse.success({ data });
         }
-    );
+        return ApiResponse.error({ message: "Params error" });
+    };
 }
