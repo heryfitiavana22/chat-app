@@ -73,7 +73,10 @@ export function ChatBox({ route }: ChatBoxProps) {
             sender: userConnected,
             receiver: userToChat.data,
             onReceived(newChat) {
-                newChat && setChats((last) => [...new Set([newChat, ...last])]);
+                newChat &&
+                    setChats((last) =>
+                        ChatBoxHelper.removeDuplicatedID([newChat, ...last])
+                    );
                 chatListSocket.emitRefetchReceiver(userToChat.data);
             },
         });
